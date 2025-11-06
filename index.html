@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace Management Dashboard - UI Shell</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter Font -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        /* Custom scrollbar for better look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background-color: #a8a29e; border-radius: 10px; }
+        ::-webkit-scrollbar-track { background-color: #f3f4f6; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Main App Container -->
+    <div id="app" class="flex flex-1">
+        
+        <!-- Sidebar Navigation -->
+        <nav id="sidebar" class="w-64 bg-indigo-800 text-white flex-shrink-0 transition-all duration-300 hidden md:block">
+            <div class="p-6">
+                <h2 class="text-2xl font-extrabold tracking-wide mb-10">Marketplace Hub</h2>
+                <ul class="space-y-2">
+                    <li><button data-view="dashboard" class="nav-link w-full text-left py-3 px-4 rounded-xl hover:bg-indigo-700 transition duration-150 flex items-center space-x-3 bg-indigo-700 font-semibold">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        <span>Dashboard</span>
+                    </button></li>
+                    <li><button data-view="products" class="nav-link w-full text-left py-3 px-4 rounded-xl hover:bg-indigo-700 transition duration-150 flex items-center space-x-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c1.657 0 3 .895 3 2s-1.343 2-3 2-3 .895-3 2 1.343 2 3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 4v2m0 6v2"></path></svg>
+                        <span>Products</span>
+                    </button></li>
+                    <li><button data-view="vendors" class="nav-link w-full text-left py-3 px-4 rounded-xl hover:bg-indigo-700 transition duration-150 flex items-center space-x-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20v-2m0 2a3 3 0 01-3-3h-2m2-3a3 3 0 00-3-3H9a3 3 0 00-3 3v2m6 0a6 6 0 006-6v-2a6 6 0 00-6-6H6a6 6 0 00-6 6v2a6 6 0 006 6h2m-6 0v2m-2-2h2m-2 0H4a2 2 0 01-2-2v-4a2 2 0 012-2h4a2 2 0 012 2v4a2 2 0 01-2 2H2z"></path></svg>
+                        <span>Vendors</span>
+                    </button></li>
+                    <li><button data-view="orders" class="nav-link w-full text-left py-3 px-4 rounded-xl hover:bg-indigo-700 transition duration-150 flex items-center space-x-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                        <span>Orders</span>
+                    </button></li>
+                </ul>
+            </div>
+            <div class="absolute bottom-0 p-6 w-full">
+                <p class="text-sm text-indigo-300 truncate">Current User:</p>
+                <p id="display-user-id" class="text-white text-xs font-mono break-all">admin@marketplace.com</p>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main id="main-content" class="flex-1 p-4 md:p-8 overflow-y-auto">
+            <header class="flex justify-between items-center mb-6">
+                <h1 id="page-title" class="text-3xl font-bold text-gray-800">Dashboard</h1>
+                <div class="flex space-x-4 items-center">
+                    <button class="text-sm px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-150 shadow-md">
+                        Logout (UI Only)
+                    </button>
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="md:hidden p-2 text-indigo-600 rounded-lg hover:bg-gray-200 transition duration-150">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </header>
+
+            <div id="content-area">
+                <!-- Content for each view will be injected here -->
+            </div>
+
+            <!-- Modal for adding products/vendors/etc. -->
+            <div id="data-modal" class="hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+                <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 id="modal-title" class="text-xl font-bold text-gray-800">Modal Title</h3>
+                        <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                    <form id="data-form">
+                        <!-- Form content injected here -->
+                    </form>
+                    <p id="modal-note" class="text-xs text-red-500 mt-3">Note: This is a front-end UI shell. No data will be saved.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- Mock Data (Pure Front-End) ---
+        const MOCK_DATA = {
+            products: [
+                { id: 'p1', name: 'Wireless Mechanical Keyboard', vendorId: 'v1', price: 99.99, stock: 50 },
+                { id: 'p2', name: '4K Ultra HD Monitor', vendorId: 'v1', price: 349.00, stock: 15 },
+                { id: 'p3', name: 'Noise-Cancelling Headphones', vendorId: 'v2', price: 199.50, stock: 120 },
+                { id: 'p4', name: 'Ergonomic Desk Chair', vendorId: 'v3', price: 250.00, stock: 35 },
+            ],
+            vendors: [
+                { id: 'v1', name: 'TechGear Solutions', status: 'Active', rating: 4.8 },
+                { id: 'v2', name: 'Audio Excellence Co.', status: 'Active', rating: 4.5 },
+                { id: 'v3', name: 'Office Comfort Inc.', status: 'Suspended', rating: 3.2 },
+            ],
+            orders: [
+                { id: 'o1', productId: 'p1', vendorId: 'v1', quantity: 2, status: 'Shipped', date: 1700000000000 },
+                { id: 'o2', productId: 'p3', vendorId: 'v2', quantity: 1, status: 'Pending', date: 1700010000000 },
+                { id: 'o3', productId: 'p2', vendorId: 'v1', quantity: 1, status: 'Delivered', date: 1700020000000 },
+                { id: 'o4', productId: 'p4', vendorId: 'v3', quantity: 3, status: 'Canceled', date: 1700030000000 },
+            ],
+            currentView: 'dashboard'
+        };
+        
+        // --- Core UI Elements ---
+        const contentArea = document.getElementById('content-area');
+        const pageTitle = document.getElementById('page-title');
+        const sidebar = document.getElementById('sidebar');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const modal = document.getElementById('data-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const dataForm = document.getElementById('data-form');
+
+        // --- UI & Rendering Logic ---
+
+        // Toggle mobile sidebar
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('fixed');
+            sidebar.classList.toggle('inset-y-0');
+        });
+
+        // Navigation Handler
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const view = e.currentTarget.getAttribute('data-view');
+                if (view) {
+                    MOCK_DATA.currentView = view;
+                    renderView(view);
+                    // Hide sidebar on mobile after click
+                    if (window.innerWidth < 768) {
+                        sidebar.classList.add('hidden');
+                        sidebar.classList.remove('fixed');
+                        sidebar.classList.remove('inset-y-0');
+                    }
+                }
+            });
+        });
+
+        // View Renderer
+        const renderView = (view) => {
+            // Update active link styling
+            navLinks.forEach(link => {
+                if (link.getAttribute('data-view') === view) {
+                    link.classList.add('bg-indigo-700', 'font-semibold');
+                } else {
+                    link.classList.remove('bg-indigo-700', 'font-semibold');
+                }
+            });
+
+            // Set title and content
+            switch (view) {
+                case 'dashboard':
+                    renderDashboard();
+                    break;
+                case 'products':
+                    renderProducts();
+                    break;
+                case 'vendors':
+                    renderVendors();
+                    break;
+                case 'orders':
+                    renderOrders();
+                    break;
+                default:
+                    renderDashboard();
+            }
+        };
+        
+        // --- Modal Control (Simulated) ---
+        window.openModal = (title, formHtml) => {
+            modalTitle.textContent = title;
+            dataForm.innerHTML = formHtml;
+            modal.classList.remove('hidden');
+            
+            // Prevent form submission since this is front-end only
+            dataForm.onsubmit = (e) => {
+                e.preventDefault();
+                alert(`Form submitted for: ${title}. (No data saved.)`);
+                closeModal();
+            };
+        };
+
+        window.closeModal = () => {
+            modal.classList.add('hidden');
+        };
+
+        // --- View Implementations ---
+
+        const renderDashboard = () => {
+            pageTitle.textContent = 'Dashboard: Overview';
+            const totalProducts = MOCK_DATA.products.length;
+            const activeVendors = MOCK_DATA.vendors.filter(v => v.status === 'Active').length;
+            const pendingOrders = MOCK_DATA.orders.filter(o => o.status === 'Pending').length;
+            
+            // Calculate mock revenue
+            const totalRevenue = MOCK_DATA.orders.reduce((sum, order) => {
+                const product = MOCK_DATA.products.find(p => p.id === order.productId);
+                return sum + (product ? product.price * order.quantity : 0);
+            }, 0).toFixed(2);
+            
+            contentArea.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    ${createStatCard('Total Products', totalProducts, 'text-blue-500', 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z')}
+                    ${createStatCard('Active Vendors', activeVendors, 'text-green-500', 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20v-2m0 2a3 3 0 01-3-3h-2m2-3a3 3 0 00-3-3H9a3 3 0 00-3 3v2m6 0a6 6 0 006-6v-2a6 6 0 00-6-6H6a6 6 0 00-6 6v2a6 6 0 006 6h2m-6 0v2m-2-2h2m-2 0H4a2 2 0 01-2-2v-4a2 2 0 012-2h4a2 2 0 012 2v4a2 2 0 01-2 2H2z')}
+                    ${createStatCard('Pending Orders', pendingOrders, 'text-yellow-500', 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01')}
+                    ${createStatCard('Total Revenue', '$' + totalRevenue, 'text-indigo-500', 'M12 8c1.657 0 3 .895 3 2s-1.343 2-3 2-3 .895-3 2 1.343 2 3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 4v2m0 6v2', true)}
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-700">Recent Activity</h2>
+                    <ul class="space-y-3">
+                        ${MOCK_DATA.orders.slice(0, 5).map(o => {
+                            const vendor = MOCK_DATA.vendors.find(v => v.id === o.vendorId) || { name: 'Unknown Vendor' };
+                            const product = MOCK_DATA.products.find(p => p.id === o.productId) || { name: 'Unknown Product' };
+                            return `
+                                <li class="p-3 bg-gray-50 rounded-lg flex justify-between items-center text-sm border-l-4 border-yellow-400">
+                                    <span class="font-medium">${vendor.name} received a new order of: ${product.name}.</span>
+                                    <span class="text-gray-500">${new Date(o.date).toLocaleDateString()}</span>
+                                </li>
+                            `;
+                        }).join('')}
+                    </ul>
+                </div>
+            `;
+        };
+
+        const createStatCard = (title, value, colorClass, svgPath, isCurrency = false) => {
+            return `
+                <div class="bg-white p-6 rounded-xl shadow-lg flex items-center space-x-4 transition duration-300 hover:shadow-xl">
+                    <div class="p-3 ${colorClass} bg-opacity-10 rounded-full">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${svgPath}"></path></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">${title}</p>
+                        <p class="text-2xl font-bold text-gray-800">${value}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Products View ---
+        const renderProducts = () => {
+            pageTitle.textContent = 'Products Management';
+            contentArea.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-sm text-gray-500">Total Products: ${MOCK_DATA.products.length}</p>
+                    <button onclick="showAddProductModal()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-150 flex items-center space-x-2 shadow-md">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        <span>Add Product</span>
+                    </button>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg overflow-x-auto">
+                    ${createTable(
+                        ['Name', 'Vendor', 'Price', 'Stock', 'Actions'],
+                        MOCK_DATA.products.map(p => {
+                            const vendor = MOCK_DATA.vendors.find(v => v.id === p.vendorId) || { name: 'N/A' };
+                            return [
+                                p.name,
+                                vendor.name,
+                                '$' + p.price.toFixed(2),
+                                p.stock,
+                                `<button onclick="alert('Delete Product: ${p.id}')" class="text-red-500 hover:text-red-700 text-sm font-medium">Delete</button>`
+                            ];
+                        })
+                    )}
+                </div>
+            `;
+        };
+        
+        // Modal function for adding a product
+        window.showAddProductModal = () => {
+            const vendorOptions = MOCK_DATA.vendors.map(v => `<option value="${v.id}">${v.name}</option>`).join('');
+            const formHtml = `
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Product Name</label>
+                        <input type="text" name="name" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Vendor</label>
+                        <select name="vendorId" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2">
+                            ${vendorOptions}
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Price</label>
+                            <input type="number" name="price" required step="0.01" min="0.01" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2" value="100.00">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Stock</label>
+                            <input type="number" name="stock" required min="0" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2" value="10">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition duration-150">
+                        Add Product (Simulated)
+                    </button>
+                </div>
+            `;
+            openModal('Add New Product', formHtml);
+        };
+
+
+        // --- Vendors View ---
+        const renderVendors = () => {
+            pageTitle.textContent = 'Vendors Management';
+            contentArea.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-sm text-gray-500">Total Vendors: ${MOCK_DATA.vendors.length}</p>
+                    <button onclick="showAddVendorModal()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-150 flex items-center space-x-2 shadow-md">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM12 18H5a2 2 0 01-2-2v-4a2 2 0 012-2h7l-1 4 1 4z"></path></svg>
+                        <span>Add Vendor</span>
+                    </button>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg overflow-x-auto">
+                    ${createTable(
+                        ['Name', 'Status', 'Rating', 'Products', 'Actions'],
+                        MOCK_DATA.vendors.map(v => {
+                            const productCount = MOCK_DATA.products.filter(p => p.vendorId === v.id).length;
+                            const statusBadge = `<span class="px-3 py-1 text-xs font-semibold rounded-full ${v.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">${v.status}</span>`;
+                            return [
+                                v.name,
+                                statusBadge,
+                                `${v.rating || 'N/A'} / 5`,
+                                productCount,
+                                `<button onclick="alert('Toggle Status for ${v.name}')" class="text-blue-500 hover:text-blue-700 text-sm font-medium mr-2">${v.status === 'Active' ? 'Suspend' : 'Activate'}</button><button onclick="alert('Delete Vendor: ${v.id}')" class="text-red-500 hover:text-red-700 text-sm font-medium">Delete</button>`
+                            ];
+                        })
+                    )}
+                </div>
+            `;
+        };
+        
+        window.showAddVendorModal = () => {
+            const formHtml = `
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Vendor Name</label>
+                        <input type="text" name="name" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Initial Status</label>
+                        <select name="status" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 border p-2">
+                            <option value="Active">Active</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Suspended">Suspended</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition duration-150">
+                        Add Vendor (Simulated)
+                    </button>
+                </div>
+            `;
+            openModal('Add New Vendor', formHtml);
+        };
+
+        // --- Orders View ---
+        const renderOrders = () => {
+            pageTitle.textContent = 'Orders Management';
+            contentArea.innerHTML = `
+                <div class="bg-white rounded-xl shadow-lg overflow-x-auto">
+                    ${createTable(
+                        ['Order ID', 'Product', 'Vendor', 'Quantity', 'Status', 'Date', 'Actions'],
+                        MOCK_DATA.orders.map(o => {
+                            const product = MOCK_DATA.products.find(p => p.id === o.productId) || { name: 'Unknown', price: 0 };
+                            const vendor = MOCK_DATA.vendors.find(v => v.id === o.vendorId) || { name: 'N/A' };
+                            const statusBadge = getStatusBadge(o.status);
+                            return [
+                                o.id.substring(0, 8),
+                                product.name,
+                                vendor.name,
+                                o.quantity,
+                                statusBadge,
+                                new Date(o.date).toLocaleDateString(),
+                                `<button onclick="alert('Update Status for Order: ${o.id}')" class="text-indigo-500 hover:text-indigo-700 text-sm font-medium mr-2">Update Status</button><button onclick="alert('Delete Order: ${o.id}')" class="text-red-500 hover:text-red-700 text-sm font-medium">Delete</button>`
+                            ];
+                        })
+                    )}
+                </div>
+            `;
+        };
+
+        const getStatusBadge = (status) => {
+            let color = 'bg-gray-100 text-gray-800';
+            if (status === 'Pending') color = 'bg-yellow-100 text-yellow-800';
+            else if (status === 'Shipped') color = 'bg-blue-100 text-blue-800';
+            else if (status === 'Delivered') color = 'bg-green-100 text-green-800';
+            else if (status === 'Canceled') color = 'bg-red-100 text-red-800';
+            return `<span class="px-3 py-1 text-xs font-semibold rounded-full ${color}">${status}</span>`;
+        };
+
+        // --- Utility Functions ---
+
+        // Simple table generator for all views
+        const createTable = (headers, data) => {
+            if (data.length === 0) {
+                return '<p class="p-6 text-gray-500">No data available in this section.</p>';
+            }
+            
+            return `
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            ${headers.map(h => `<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${h}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        ${data.map(row => `
+                            <tr>
+                                ${row.map(cell => `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${cell}</td>`).join('')}
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        };
+        
+        // Initial render on load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderView(MOCK_DATA.currentView);
+        });
+
+    </script>
+</body>
+</html>
